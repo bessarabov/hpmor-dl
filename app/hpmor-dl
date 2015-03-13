@@ -1,0 +1,76 @@
+#!/usr/bin/perl
+
+=encoding UTF-8
+=cut
+
+=head1 DESCRIPTION
+
+=cut
+
+# common modules
+use strict;
+use warnings FATAL => 'all';
+use feature 'say';
+use utf8;
+use open qw(:std :utf8);
+
+use HTTP::Tiny;
+use Carp;
+use HTML::Strip;
+use File::Slurp;
+use Text::Trim;
+
+# global vars
+
+# subs
+sub get_latest_chapter {
+
+    my $response = HTTP::Tiny->new->get( 'http://hpmor.com/' );
+
+    $response->{content} =~ m{Latest chapter: <a href="/chapter/(\d+)};
+
+    if ($1) {
+        return $1;
+    } else {
+        croak "Can't find out Latest chapter";
+    }
+}
+
+sub get_chapter_content {
+    my ($chapter) = @_;
+
+    my $response = HTTP::Tiny->new->get( "http://hpmor.com/chapter/$chapter" );
+
+    my $hs = HTML::Strip->new();
+
+    my $clean_text = $hs->parse( $response->{content} );
+    $hs->eof;
+
+    $clean_text =~ s/.*?Next &raquo;(.*)/$1/ms;
+    $clean_text =~ s/(.*)Read reviews or write your own review of this chapter at FanFiction\.net.*/$1/ms;
+
+    $clean_text = trim( $clean_text ) . "\n";
+
+    return $clean_text;
+}
+
+# main
+sub main {
+
+    my $latest_chapter = get_latest_chapter();
+
+    foreach my $chapter ( 1 .. $latest_chapter ) {
+
+        warn "Woring on chapter $chapter/$latest_chapter\n";
+
+        my $content = get_chapter_content( $chapter );
+        my $file_name = "/data/" . sprintf("%04d", $chapter) . ".txt";
+
+        write_file( $file_name, $content );
+
+        sleep 3; # to be polite with site http://hpmor.com/
+    }
+
+}
+main();
+__END__
