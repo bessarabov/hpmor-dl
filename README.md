@@ -1,4 +1,4 @@
-# hpmor-dt
+# hpmor-dl
 
 This is a script to download all chapters from fanfic Harry Potter and the
 Methods of Rationality from site http://hpmor.com
