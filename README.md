@@ -11,7 +11,10 @@ to play with the text so I created this script.
 
 ## How to use it
 
-The simplest way is to use this script with Docker.
+The simplest way is not to use thist script, but donwload all the chapters
+from https://github.com/bessarabov/hpmor
+
+In case you still want to run this script, you need to:
 
  1. [Install Docker](https://docs.docker.com/installation/)
  2. Build image `docker build --tag hpmor-dl .`
