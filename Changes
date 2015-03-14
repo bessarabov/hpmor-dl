@@ -3,3 +3,8 @@
 1.0.0   2015-03-14
         [Major]
         * First public release
+
+1.0.1   2015-03-14
+        [Patch]
+        * Fixing misspell in README.md
+        * Recomendation not to use this script =)
